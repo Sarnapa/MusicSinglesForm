@@ -13,28 +13,34 @@ namespace MusicSingles
     public partial class SinglesForm : Form
     {
         private SinglesList model;
-        private ListViewItem lastEditedItem = null;
-        private Boolean newer;
+        private CheckBox lastSelectedCheckBox;
 
-        public SinglesForm(SinglesList model, Boolean newer)
+        public SinglesForm(SinglesList model)
         {
             this.model = model;
-            this.newer = newer;
             model.added += new ChangedEventHandler(this.addedSingle);
             model.edited += new ChangedEventHandler(this.editedSingle);
             model.deleted += new ChangedEventHandler(this.deletedSingle);
+            this.Activated += new System.EventHandler(singlesForm_Activated);
+            this.Deactivate += new System.EventHandler(singlesForm_Deactivate);
+            this.FormClosing += new FormClosingEventHandler(singlesForm_FormClosing);
             InitializeComponent();
         }
 
-        public int getSinglesListViewCount()
+        private void singleForm_Load(object sender, EventArgs e)
         {
-            return singlesListView.Items.Count;
+            allCheckBox.Checked = true;
+            lastSelectedCheckBox = allCheckBox;
+            singlesPrint(2);
         }
 
-        private void addedSingle(object sender, EventArgs e)
+        // Methods for updating appropriate form
+
+        private void addedSingle(object sender, MyEventArgs e)
         {
             MusicSingle lastSingle = model.getLastSingle();
-            if ((newer && lastSingle.TrackDate.Year >= 2000) || (!newer && lastSingle.TrackDate.Year < 2000))
+            if (allCheckBox.Checked || (newerCheckBox.Checked && lastSingle.TrackDate.Year >= 2000) 
+                || (olderCheckBox.Checked && lastSingle.TrackDate.Year < 2000))
             {
                 ListViewItem item = new ListViewItem();
                 item.Tag = model.getLastSingle();
@@ -43,47 +49,71 @@ namespace MusicSingles
             }
         }
 
-        private void editedSingle(object sender, EventArgs e)
+        private void editedSingle(object sender, MyEventArgs e)
         {
-            MusicSingle lastSingle = model.getLastSingle();
-            if(lastEditedItem == null)
+            MusicSingle single = e.getSingle();
+            bool isNewerSingle = e.getNewer();
+            bool isChangedGeneration = e.getChangedGeneration();
+            if (allCheckBox.Checked)
             {
-                if ((newer && lastSingle.TrackDate.Year >= 2000) || (!newer && lastSingle.TrackDate.Year < 2000))
-                {
-                    ListViewItem item = new ListViewItem();
-                    item.Tag = model.getLastSingle();
-                    updateItem(item);
-                    singlesListView.Items.Add(item);
-                }
+                updateItem(getItem(single));
             }
             else
             {
-                if ((newer && lastSingle.TrackDate.Year >= 2000) || (!newer && lastSingle.TrackDate.Year < 2000))
+                if ((newerCheckBox.Checked && isNewerSingle)
+                    || (olderCheckBox.Checked && !isNewerSingle))
                 {
-                    updateItem(lastEditedItem);
-                }
-                else if ((newer && lastSingle.TrackDate.Year < 2000) || (!newer && lastSingle.TrackDate.Year >=2000))
-                {
-                    for(int i = 0; i < singlesListView.Items.Count; ++i)
+                    if(isChangedGeneration)
                     {
-                        if (ReferenceEquals(lastEditedItem, singlesListView.Items[i]))
-                        {
-                            singlesListView.Items[i].Remove();
-                            break;
-                        }
+                        ListViewItem item = new ListViewItem();
+                        item.Tag = single;
+                        updateItem(item);
+                        singlesListView.Items.Add(item);
+                    }
+                    else
+                        updateItem(getItem(single));
+                }
+                else
+                {
+                   if(isChangedGeneration)
+                   {
+                       if ((newerCheckBox.Checked && !isNewerSingle)
+                           || (olderCheckBox.Checked && isNewerSingle))
+                       {
+                           ListViewItem item = getItem(single);
+                           item.Remove();
+                       }
                     }
                 }
-            }
-            lastEditedItem = null;
+            }            
         }
 
-        private void deletedSingle(object sender, EventArgs e)
+        private void deletedSingle(object sender, MyEventArgs e)
         {
-           if(singlesListView.SelectedItems.Count == 1)
-           {
-               singlesListView.SelectedItems[0].Remove();
-           }
+            MusicSingle single = e.getSingle();
+            bool isNewer = e.getNewer();
+            if (allCheckBox.Checked || (newerCheckBox.Checked && isNewer) 
+                || (olderCheckBox.Checked && !isNewer))
+            {
+                if (single != null)
+                {
+                    ListViewItem item = getItem(single);
+                    getItem(single).Remove();
+                }
+            }
         }
+
+        private ListViewItem getItem(MusicSingle single)
+        {
+            foreach(ListViewItem item in singlesListView.Items)
+            {
+                if (ReferenceEquals(single, item.Tag))
+                    return item;
+            }
+            return null;
+        }
+
+        //EventHandler for proper button click
 
         private void addSingleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -101,7 +131,6 @@ namespace MusicSingles
             {
                 MusicSingle single = (MusicSingle)singlesListView.SelectedItems[0].Tag;
                 AddEditForm dialogForm = new AddEditForm(single);
-                lastEditedItem = singlesListView.SelectedItems[0];
                 if (dialogForm.ShowDialog() == DialogResult.OK)
                 {
                     String title = dialogForm.SingleTitle;
@@ -110,8 +139,6 @@ namespace MusicSingles
                     MusicStyle style = dialogForm.SingleStyle;
                     model.editSingle(single, title, author, trackDate, style);
                 }
-                else
-                    lastEditedItem = null;
             }
         }
 
@@ -124,6 +151,8 @@ namespace MusicSingles
             }
         }
 
+        //To update item in ListView
+
         private void updateItem(ListViewItem item)
         {
             MusicSingle single = (MusicSingle)item.Tag;
@@ -134,12 +163,90 @@ namespace MusicSingles
             item.SubItems[2].Text = single.Author;
             item.SubItems[3].Text = single.TrackDate.ToShortDateString();
             item.SubItems[4].Text = single.Style.ToString();
-
         }
 
-        private void singlesForm_FormClosed(Object sender, FormClosedEventArgs e)
+        //To update labelText in statusStrip in mdiParent
+     
+        private void singlesForm_Activated(object sender, EventArgs e)
         {
+           singlesCountStatusLabel.Text = "Liczba elementów: " + singlesListView.Items.Count;
+           this.MdiParent.Controls.Add(singlesCountStrip);
         }
 
+        private void singlesForm_Deactivate(object sender, EventArgs e)
+        {
+            this.MdiParent.Controls.Remove(singlesCountStrip);
+        }
+
+        private void checkBox_Click(object sender, EventArgs e)
+        {
+            if (!ReferenceEquals(sender, lastSelectedCheckBox))
+            {
+                lastSelectedCheckBox.Checked = false;
+                if (ReferenceEquals(sender, newerCheckBox))
+                    singlesPrint(1);
+                else if (ReferenceEquals(sender, olderCheckBox))
+                    singlesPrint(0);
+                else
+                    singlesPrint(2);
+            }
+            else if (ReferenceEquals(sender, lastSelectedCheckBox))
+                lastSelectedCheckBox.Checked = true;
+            lastSelectedCheckBox = (CheckBox)sender;
+        }
+
+        private void singlesPrint(int option)
+        {
+            singlesListView.Items.Clear();
+            switch(option)
+            {
+                case 0:
+                    foreach(MusicSingle single in model.getSinglesList())
+                        if(single.TrackDate.Year < 2000)
+                        {
+                            ListViewItem item = new ListViewItem();
+                            item.Tag = single;
+                            updateItem(item);
+                            singlesListView.Items.Add(item);
+                        }
+                    break;
+                case 1:
+                    foreach (MusicSingle single in model.getSinglesList())
+                        if (single.TrackDate.Year >= 2000)
+                        {
+                            ListViewItem item = new ListViewItem();
+                            item.Tag = single;
+                            updateItem(item);
+                            singlesListView.Items.Add(item);
+                        }
+                    break;
+                case 2:
+                    foreach (MusicSingle single in model.getSinglesList())
+                    {
+                        ListViewItem item = new ListViewItem();
+                        item.Tag = single;
+                        updateItem(item);
+                        singlesListView.Items.Add(item);
+                    }
+                    break;
+            }
+        }
+        
+        private void singlesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(e.CloseReason != CloseReason.MdiFormClosing)
+            {
+                if (this.MdiParent.MdiChildren.Length == 1)
+                {
+                    e.Cancel = true;
+                    MessageBox.Show("One child form must remain.");
+                }
+                else
+                {
+                    e.Cancel = false;
+                }
+            }
+        }
     }
+
 }

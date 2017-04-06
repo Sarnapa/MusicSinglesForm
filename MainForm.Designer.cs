@@ -30,20 +30,19 @@
         {
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.mDIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.statusStripLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.addViewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
-            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mDIToolStripMenuItem});
+            this.mDIToolStripMenuItem,
+            this.addViewMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.MdiWindowListItem = this.mDIToolStripMenuItem;
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip.Size = new System.Drawing.Size(784, 24);
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -53,27 +52,18 @@
             this.mDIToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.mDIToolStripMenuItem.Text = "MDI";
             // 
-            // statusStrip
+            // addViewMenuItem
             // 
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusStripLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 639);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(584, 22);
-            this.statusStrip.TabIndex = 3;
-            this.statusStrip.Text = "statusStrip1";
-            // 
-            // statusStripLabel
-            // 
-            this.statusStripLabel.Name = "statusStripLabel";
-            this.statusStripLabel.Size = new System.Drawing.Size(0, 17);
+            this.addViewMenuItem.Name = "addViewMenuItem";
+            this.addViewMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.addViewMenuItem.Text = "Add View";
+            this.addViewMenuItem.Click += new System.EventHandler(this.addViewMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 661);
-            this.Controls.Add(this.statusStrip);
+            this.ClientSize = new System.Drawing.Size(784, 661);
             this.Controls.Add(this.menuStrip);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.IsMdiContainer = true;
@@ -84,8 +74,6 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,8 +83,7 @@
 
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem mDIToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel statusStripLabel;
+        private System.Windows.Forms.ToolStripMenuItem addViewMenuItem;
 
 
     }
