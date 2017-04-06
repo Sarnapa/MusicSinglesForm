@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.titleLabel = new System.Windows.Forms.Label();
             this.authorLabel = new System.Windows.Forms.Label();
             this.trackDateLabel = new System.Windows.Forms.Label();
@@ -38,6 +39,10 @@
             this.styleTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.titleErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.authorErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.titleErrorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.authorErrorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -83,6 +88,7 @@
             // titleTextBox
             // 
             this.titleTextBox.Location = new System.Drawing.Point(174, 17);
+            this.titleTextBox.MaxLength = 50;
             this.titleTextBox.Name = "titleTextBox";
             this.titleTextBox.Size = new System.Drawing.Size(151, 20);
             this.titleTextBox.TabIndex = 4;
@@ -90,6 +96,7 @@
             // authorTextBox
             // 
             this.authorTextBox.Location = new System.Drawing.Point(174, 51);
+            this.authorTextBox.MaxLength = 50;
             this.authorTextBox.Name = "authorTextBox";
             this.authorTextBox.Size = new System.Drawing.Size(151, 20);
             this.authorTextBox.TabIndex = 5;
@@ -100,6 +107,7 @@
             this.dateTimePicker.Name = "dateTimePicker";
             this.dateTimePicker.Size = new System.Drawing.Size(151, 20);
             this.dateTimePicker.TabIndex = 6;
+            this.dateTimePicker.Value = new System.DateTime(2017, 4, 6, 0, 0, 0, 0);
             // 
             // styleTextBox
             // 
@@ -129,6 +137,14 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // titleErrorProvider
+            // 
+            this.titleErrorProvider.ContainerControl = this;
+            // 
+            // authorErrorProvider
+            // 
+            this.authorErrorProvider.ContainerControl = this;
+            // 
             // AddEditForm
             // 
             this.AcceptButton = this.okButton;
@@ -151,6 +167,8 @@
             this.Name = "AddEditForm";
             this.Text = "Single";
             this.Load += new System.EventHandler(this.addEditForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.titleErrorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.authorErrorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,5 +186,7 @@
         private System.Windows.Forms.TextBox styleTextBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.ErrorProvider titleErrorProvider;
+        private System.Windows.Forms.ErrorProvider authorErrorProvider;
     }
 }
