@@ -8,7 +8,7 @@ public enum MusicStyle
 {
     Rock,
     Pop,
-    Rap
+    HipHop
 }
 
 namespace MusicSingles

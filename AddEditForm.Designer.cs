@@ -36,11 +36,11 @@
             this.titleTextBox = new System.Windows.Forms.TextBox();
             this.authorTextBox = new System.Windows.Forms.TextBox();
             this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.styleTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.titleErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.authorErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.myMusicStyleControler = new MusicSingles.MusicStyleControler();
             ((System.ComponentModel.ISupportInitialize)(this.titleErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.authorErrorProvider)).BeginInit();
             this.SuspendLayout();
@@ -109,13 +109,6 @@
             this.dateTimePicker.TabIndex = 6;
             this.dateTimePicker.Value = new System.DateTime(2017, 4, 6, 0, 0, 0, 0);
             // 
-            // styleTextBox
-            // 
-            this.styleTextBox.Location = new System.Drawing.Point(174, 115);
-            this.styleTextBox.Name = "styleTextBox";
-            this.styleTextBox.Size = new System.Drawing.Size(151, 20);
-            this.styleTextBox.TabIndex = 7;
-            // 
             // okButton
             // 
             this.okButton.Location = new System.Drawing.Point(69, 164);
@@ -145,6 +138,14 @@
             // 
             this.authorErrorProvider.ContainerControl = this;
             // 
+            // myMusicStyleControler
+            // 
+            this.myMusicStyleControler.Location = new System.Drawing.Point(174, 105);
+            this.myMusicStyleControler.Name = "myMusicStyleControler";
+            this.myMusicStyleControler.Size = new System.Drawing.Size(150, 50);
+            this.myMusicStyleControler.Style = MusicStyle.Pop;
+            this.myMusicStyleControler.TabIndex = 10;
+            // 
             // AddEditForm
             // 
             this.AcceptButton = this.okButton;
@@ -152,9 +153,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(384, 211);
+            this.Controls.Add(this.myMusicStyleControler);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
-            this.Controls.Add(this.styleTextBox);
             this.Controls.Add(this.dateTimePicker);
             this.Controls.Add(this.authorTextBox);
             this.Controls.Add(this.titleTextBox);
@@ -183,10 +184,10 @@
         private System.Windows.Forms.TextBox titleTextBox;
         private System.Windows.Forms.TextBox authorTextBox;
         private System.Windows.Forms.DateTimePicker dateTimePicker;
-        private System.Windows.Forms.TextBox styleTextBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.ErrorProvider titleErrorProvider;
         private System.Windows.Forms.ErrorProvider authorErrorProvider;
+        private MusicStyleControler myMusicStyleControler;
     }
 }

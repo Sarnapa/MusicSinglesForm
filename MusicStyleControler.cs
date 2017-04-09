@@ -79,6 +79,7 @@ namespace MusicSingles
             onChanged(this, EventArgs.Empty);
         }
 
+        // event that is raised when style value has been changed
         private void onChanged(Object sender, EventArgs e)
         {
             this.Invalidate();

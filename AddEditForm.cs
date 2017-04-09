@@ -14,7 +14,6 @@ namespace MusicSingles
     public partial class AddEditForm : Form
     {
         private MusicSingle single;
-        private const int MAX_CHAR = 40;
 
         public String SingleTitle
         {
@@ -33,16 +32,7 @@ namespace MusicSingles
 
         public MusicStyle SingleStyle
         {
-            get {
-                try
-                {
-                    return (MusicStyle)Enum.Parse(typeof(MusicStyle), styleTextBox.Text);
-                }
-                catch (ArgumentException ex)
-                {
-                    return MusicStyle.Pop;
-                }
-            }
+            get { return myMusicStyleControler.Style; }
         }
         
         public AddEditForm(MusicSingle single)
@@ -59,7 +49,7 @@ namespace MusicSingles
                 this.titleTextBox.Text = single.Title;
                 this.authorTextBox.Text = single.Author;
                 this.dateTimePicker.Value = single.TrackDate;
-                this.styleTextBox.Text = single.Style.ToString();
+                this.myMusicStyleControler.Style = single.Style;
             }
             this.titleTextBox.Validating += new CancelEventHandler(titleTextBox_Validating);
             this.authorTextBox.Validating += new CancelEventHandler(authorTextBox_Validating);
@@ -76,6 +66,7 @@ namespace MusicSingles
 
         }
 
+        //to validate inserting text in textBoxes
         private void titleTextBox_Validating(object sender, CancelEventArgs e)
         {
             Regex regex = new Regex("[<^>^,^;]");

@@ -10,9 +10,8 @@ using System.Windows.Forms;
 
 namespace MusicSingles
 {
-    public partial class SinglesForm : Form
+    public partial class SinglesForm : BaseSinglesForm
     {
-        private SinglesList model;
         private CheckBox lastSelectedCheckBox;
 
         public SinglesForm(SinglesList model)
@@ -120,8 +119,8 @@ namespace MusicSingles
             AddEditForm dialogForm = new AddEditForm(null);
             if (dialogForm.ShowDialog() == DialogResult.OK)
             {
-               MusicSingle newSingle = new MusicSingle(dialogForm.SingleTitle, dialogForm.SingleAuthor, dialogForm.SingleTrackDate, dialogForm.SingleStyle);
-               model.addSingle(newSingle);
+                addSingleToModel(dialogForm.SingleTitle, dialogForm.SingleAuthor, dialogForm.SingleTrackDate, dialogForm.SingleStyle);
+                OnActivated(EventArgs.Empty);
             }
         }
 
@@ -133,11 +132,9 @@ namespace MusicSingles
                 AddEditForm dialogForm = new AddEditForm(single);
                 if (dialogForm.ShowDialog() == DialogResult.OK)
                 {
-                    String title = dialogForm.SingleTitle;
-                    String author = dialogForm.SingleAuthor;
-                    DateTime trackDate = dialogForm.SingleTrackDate;
-                    MusicStyle style = dialogForm.SingleStyle;
-                    model.editSingle(single, title, author, trackDate, style);
+                    editSingleInModel(single, dialogForm.SingleTitle, dialogForm.SingleAuthor, 
+                        dialogForm.SingleTrackDate, dialogForm.SingleStyle);
+                    OnActivated(EventArgs.Empty);
                 }
             }
         }
@@ -147,7 +144,8 @@ namespace MusicSingles
             if (singlesListView.SelectedItems.Count == 1)
             {
                 MusicSingle single = (MusicSingle)singlesListView.SelectedItems[0].Tag;
-                model.removeSingle(single);
+                removeSingleInModel(single);
+                OnActivated(EventArgs.Empty);
             }
         }
 
@@ -166,7 +164,7 @@ namespace MusicSingles
         }
 
         //To update labelText in statusStrip in mdiParent
-     
+        
         private void singlesForm_Activated(object sender, EventArgs e)
         {
            singlesCountStatusLabel.Text = "Liczba elementów: " + singlesListView.Items.Count;
@@ -177,6 +175,8 @@ namespace MusicSingles
         {
             this.MdiParent.Controls.Remove(singlesCountStrip);
         }
+
+        // checkBoxes services - update status strip
 
         private void checkBox_Click(object sender, EventArgs e)
         {
@@ -193,7 +193,10 @@ namespace MusicSingles
             else if (ReferenceEquals(sender, lastSelectedCheckBox))
                 lastSelectedCheckBox.Checked = true;
             lastSelectedCheckBox = (CheckBox)sender;
+            OnActivated(EventArgs.Empty);
         }
+
+        // print all singles rows in case of changing checked checkBox
 
         private void singlesPrint(int option)
         {
